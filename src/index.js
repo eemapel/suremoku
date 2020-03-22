@@ -31,7 +31,7 @@ function InterStone(props) {
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className="square" onMouseDown={props.onMouseDown}>
       {props.value}
     </button>
   )
@@ -60,7 +60,7 @@ class Board extends React.Component {
 
     for (var x = 0; x < size; x++) {
       let idx = row * size + x;
-      rows.push(<Square value={this.state.squares[idx]} onClick={ () => this.handleClick(idx) } />)
+      rows.push(<Square value={this.state.squares[idx]} onMouseDown={ () => this.handleClick(idx) } />)
     }
 
     return rows
