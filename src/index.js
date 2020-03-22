@@ -13,31 +13,33 @@ class Square extends React.Component {
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
-    return <Square value={i} />;
+
+  renderRow(row, size) {
+    var rows = [];
+
+    for (var x = 0; x < size; x++) {
+      rows.push(<Square value={row * size + x} />)
+    }
+
+    return rows
   }
 
+  renderAll(size) {
+    var columns = [];
+    for (var y = 0; y < size; y++) {
+       columns.push(
+         <div>
+           {this.renderRow(y, size)}
+         </div>
+       )
+    }
+    return columns
+  }
+  
   render() {
-    const status = 'Next player: X';
-
     return (
       <div>
-        <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {this.renderAll(15)}
       </div>
     );
   }
