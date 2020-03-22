@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-//class IconUmbrella extends React.Component {
-// render() {
 function IconUmbrella() {
    return (
      <svg className="umbrella" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-labelledby="title">
@@ -14,7 +12,7 @@ function IconUmbrella() {
 
 function IconHeart() {
   return (
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
       <path fill="none" stroke="red"
         d="M 10,30
           A 20,20 0,0,1 50,30
@@ -25,15 +23,29 @@ function IconHeart() {
   )
 }
 
-function MyX() {
+function Inter() {
   return (
-    <svg viewBox="0 0 100 100">
+    <svg viewBox="0 0 25 25">
      <path stroke="black" d="
-       M 50,0
-       L 50,100
-       M 0,50
-       L 100,50
+       M 12,0
+       L 12,24
+       M 0,12
+       L 24,12
      " />
+    </svg>
+  )
+}
+
+function InterStone(props) {
+  return (
+    <svg viewBox="0 0 25 25">
+      <path stroke="black" d="
+        M 12,0
+        L 12,24
+        M 0,12
+        L 24,12
+      " />
+      <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="2" fill={props.stoneColor} />
     </svg>
   )
 }
@@ -61,14 +73,14 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        squares: Array(15 * 15).fill(null),
+        squares: Array(15 * 15).fill(<Inter />),
         xIsNext: true,
     };
   }
 
   handleClick(i) {
     const squares = this.state.squares.slice();
-    squares[i] = this.state.xIsNext ? <MyX /> : <IconHeart />;
+    squares[i] = <InterStone stoneColor={ (this.state.xIsNext ? "yellow" : "red") } />;
     this.setState({
       squares: squares,
       xIsNext: !this.state.xIsNext,

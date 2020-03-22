@@ -18,22 +18,22 @@ ol, ul {
 }
 
 .square {
-  background: #fff;
-  border: 1px solid #999;
+  border: 0;
   float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
+  height: 26px;
   margin-right: -1px;
   margin-top: -1px;
+  outline: none;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 26px;
 }
 
-.square:focus {
-  outline: none;
+/* Workaround for Firefox to remove after click effects */
+::-moz-focus-inner, :active, :focus {
+    outline: none;
+    border: 0;
+    -moz-outline-style: none;
 }
 
 .kbd-navigation .square:focus {
