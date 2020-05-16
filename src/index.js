@@ -70,7 +70,7 @@ class Board extends React.Component {
 
     for (var x = 0; x < size; x++) {
       let idx = row * size + x;
-      rows.push(<Square value={this.state.squares[idx]} onMouseDown={ () => this.handleClick(idx) } />)
+      rows.push(<Square key={idx} value={this.state.squares[idx]} onMouseDown={ () => this.handleClick(idx) } />)
     }
 
     return rows
@@ -80,7 +80,7 @@ class Board extends React.Component {
     var columns = [];
     for (var y = 0; y < size; y++) {
        columns.push(
-         <div>
+         <div key={y}>
            {this.renderRow(y, size)}
          </div>
        )
