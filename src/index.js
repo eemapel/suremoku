@@ -46,7 +46,8 @@ class BoardUI extends React.Component {
     this.state = {
         squares: Array(15 * 15).fill(<Inter />),
         prev: null,
-        depth: 0
+        depth: 0,
+        win: false
     };
   }
 
@@ -68,7 +69,8 @@ class BoardUI extends React.Component {
     this.setState({
       squares: squares,
       prev: i,
-      depth: this.state.depth + 1
+      depth: this.state.depth + 1,
+      win: cond
     });
   }
 
@@ -96,7 +98,13 @@ class BoardUI extends React.Component {
   }
   
   render() {
-    const status = 'Next to move: '+ (this.state.depth % 2 ? 'white' : 'black');
+    let status
+
+    if (this.state.win)
+      status = 'Winner: ' + (this.state.depth % 2 ? 'black': 'white');
+    else
+      status = 'Next to move: '+ (this.state.depth % 2 ? 'white' : 'black');
+
     return (
       <div>
         <div className="status">{status}</div>
