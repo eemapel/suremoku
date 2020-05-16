@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+const Logic = require('./logic.js');
+const G = new Logic();
 
 function Inter() {
   return (
@@ -38,7 +40,7 @@ function Square(props) {
   )
 }
 
-class Board extends React.Component {
+class BoardUI extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,6 +52,11 @@ class Board extends React.Component {
 
   handleClick(i) {
     const squares = this.state.squares.slice();
+
+    // Do nothing if square not empty
+    if (!G.isEmpty(i)) return
+
+    let cond = G.setMove(i)
 
     // Previous move
     if (this.state.depth)
@@ -104,7 +111,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board />
+          <BoardUI />
         </div>
         <div className="game-info">
           <div>{/* status */}</div>
