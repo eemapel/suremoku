@@ -25,6 +25,7 @@ function InterStone(props) {
         L 24,12
       " />
       <circle cx="12" cy="12" r="11" stroke="black" strokeWidth="1" fill={props.stoneColor} />
+      <circle cx="12" cy="12" r="2" fill="red" fillOpacity={props.lastMoveMarker} />
     </svg>
   )
 }
@@ -42,16 +43,25 @@ class Board extends React.Component {
     super(props);
     this.state = {
         squares: Array(15 * 15).fill(<Inter />),
-        xIsNext: true,
+        prev: null,
+        depth: 0
     };
   }
 
   handleClick(i) {
     const squares = this.state.squares.slice();
-    squares[i] = <InterStone stoneColor={ (this.state.xIsNext ? "black" : "white") } />;
+
+    // Previous move
+    if (this.state.depth)
+      squares[this.state.prev] = <InterStone stoneColor={ (this.state.depth % 2 ? "black" : "white") } lastMoveMarker="0" />;
+
+    // Current move
+    squares[i] = <InterStone stoneColor={ (this.state.depth % 2 ? "white" : "black") } lastMoveMarker="1" />;
+
     this.setState({
       squares: squares,
-      xIsNext: !this.state.xIsNext,
+      prev: i,
+      depth: this.state.depth + 1
     });
   }
 
@@ -79,7 +89,7 @@ class Board extends React.Component {
   }
   
   render() {
-    const status = 'Next player: '+ (this.state.xIsNext ? 'X' : 'O');
+    const status = 'Next to move: '+ (this.state.depth % 2 ? 'white' : 'black');
     return (
       <div>
         <div className="status">{status}</div>
