@@ -2,7 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 const Logic = require('./logic.js');
-const G = new Logic();
+let G = new Logic();
+
+const initialState = {
+  squares: Array(15 * 15).fill(<Inter />),
+  prev: null,
+  depth: 0,
+  win: false
+};
 
 function Inter() {
   return (
@@ -40,15 +47,22 @@ function Square(props) {
   )
 }
 
+function Restart({ onClick }) {
+  return (
+    <button className="restart" onClick={onClick}>
+      New Game
+    </button>
+  )
+}
+
 class BoardUI extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-        squares: Array(15 * 15).fill(<Inter />),
-        prev: null,
-        depth: 0,
-        win: false
-    };
+    this.state = initialState;
+  }
+
+  reset() {
+    this.setState(initialState);
   }
 
   getResponse = async() => {
@@ -76,8 +90,8 @@ class BoardUI extends React.Component {
   handleClick(i) {
     const squares = this.state.squares.slice();
 
-    // Do nothing if square not empty
-    if (!G.isEmpty(i)) return
+    // Do nothing if square not empty or game already won
+    if (!G.isEmpty(i) || this.state.win) return
 
     // Test express server
     this.getResponse()
@@ -125,7 +139,19 @@ class BoardUI extends React.Component {
     }
     return columns
   }
-  
+
+  renderRestartButton() {
+    return (
+      <Restart
+        onClick={() => {
+          console.log("restarting..")
+          this.reset()
+          G = new Logic();
+        }}
+      />
+    );
+  }
+
   render() {
     let status
 
@@ -138,6 +164,8 @@ class BoardUI extends React.Component {
       <div>
         <div className="status">{status}</div>
         {this.renderAll(15)}
+        <hr/>
+        <div className="restart-button">{this.renderRestartButton()}</div>
       </div>
     );
   }
@@ -149,10 +177,6 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <BoardUI />
-        </div>
-        <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
         </div>
       </div>
     );
