@@ -59,6 +59,20 @@ class BoardUI extends React.Component {
       return body;
   }
 
+  postMove = async data => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: data })
+    };
+
+    const response = await fetch('api/world', requestOptions);
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  }
+
   handleClick(i) {
     const squares = this.state.squares.slice();
 
@@ -67,6 +81,9 @@ class BoardUI extends React.Component {
 
     // Test express server
     this.getResponse()
+      .then(res => { console.log(res) })
+
+    this.postMove('abc')
       .then(res => { console.log(res) })
 
     let cond = G.setMove(i)
