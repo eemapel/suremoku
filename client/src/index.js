@@ -164,7 +164,7 @@ class BoardUI extends React.Component {
       <div>
         <div className="status">{status}</div>
         {this.renderAll(15)}
-        <hr/>
+        &nbsp;
         <div className="restart-button">{this.renderRestartButton()}</div>
       </div>
     );
