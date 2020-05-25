@@ -40,7 +40,7 @@ ol, ul {
   background: #ddd;
 }
 
-.restart {
+.controls {
   background-color: green;
   border: 5px solid green;
   color: white;
@@ -53,7 +53,7 @@ ol, ul {
   float: left;
 }
 
-.restart:hover {
+.controls:hover {
   background-color: #4CAF50;
 }
 

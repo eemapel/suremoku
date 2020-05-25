@@ -32,6 +32,14 @@ app.post('/api/move', (req, res) => {
   }
 });
 
+// Get vcf options
+app.post('/api/vcf', (req, res) => {
+  console.log(req.originalUrl)
+
+  // TODO: get meaningful values here
+  res.send({ positions: [10, 12] });
+});
+
 app.get('/api/hello', (req, res) => {
   res.send({ express: 'Hello From Express' });
 });

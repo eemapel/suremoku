@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 const initialState = {
-  squares: Array(15 * 15).fill(<Inter />),
+  squares: Array(15 * 15).fill(<Inter vcfMarker="0" />),
   prev: null,
   depth: 0,
   win: false
 };
 
-function Inter() {
+function Inter(props) {
   return (
     <svg viewBox="0 0 25 25">
      <path stroke="black" d="
@@ -18,6 +18,7 @@ function Inter() {
        M 0,12
        L 24,12
      " />
+      <circle cx="12" cy="12" r="2" fill="red" fillOpacity={props.vcfMarker} />
     </svg>
   )
 }
@@ -47,8 +48,16 @@ function Square(props) {
 
 function Restart({ onClick }) {
   return (
-    <button className="restart" onClick={onClick}>
+    <button className="controls" onClick={onClick}>
       New Game
+    </button>
+  )
+}
+
+function VCF({ onClick }) {
+  return (
+    <button className="controls" onClick={onClick}>
+      VCF
     </button>
   )
 }
@@ -63,6 +72,22 @@ class BoardUI extends React.Component {
   reset() {
     this.setState(initialState);
     this.postNewgame();
+  }
+
+  vcf() {
+    const squares = this.state.squares.slice();
+
+    this.postVCF().then(res => {
+      console.log(res)
+
+      for(var i in res.positions) {
+        squares[res.positions[i]] = <Inter vcfMarker="1" />;
+      }
+
+      this.setState({
+        squares: squares
+      });
+    });
   }
 
   getResponse = async() => {
@@ -96,6 +121,19 @@ class BoardUI extends React.Component {
     const response = await fetch('api/newgame', requestOptions);
     await response.json();
     if (response.status !== 200) throw Error("New game request failed")
+  }
+
+  postVCF = async data => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+    const response = await fetch('api/vcf', requestOptions);
+    const body = await response.json();
+    if (response.status !== 200) throw Error("VCF request failed")
+
+    return body;
   }
 
   handleClick(i) {
@@ -160,6 +198,16 @@ class BoardUI extends React.Component {
     );
   }
 
+  renderVCFButton() {
+    return (
+      <VCF
+        onClick={() => {
+          this.vcf()
+        }}
+      />
+    );
+  }
+
   render() {
     let status
 
@@ -174,6 +222,7 @@ class BoardUI extends React.Component {
         {this.renderAll(15)}
         &nbsp;
         <div className="restart-button">{this.renderRestartButton()}</div>
+        <div className="vcf-button">{this.renderVCFButton()}</div>
       </div>
     );
   }
