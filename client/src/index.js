@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-const Logic = require('./logic.js');
-let G = new Logic();
 
 const initialState = {
   squares: Array(15 * 15).fill(<Inter />),
@@ -59,10 +57,12 @@ class BoardUI extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
+    this.postNewgame();
   }
 
   reset() {
     this.setState(initialState);
+    this.postNewgame();
   }
 
   getResponse = async() => {
@@ -77,43 +77,52 @@ class BoardUI extends React.Component {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: data })
+        body: JSON.stringify({ move: data })
     };
 
-    const response = await fetch('api/world', requestOptions);
+    const response = await fetch('api/move', requestOptions);
     const body = await response.json();
     if (response.status !== 200) throw Error(body.message);
 
     return body;
   }
 
+  postNewgame = async data => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+    const response = await fetch('api/newgame', requestOptions);
+    await response.json();
+    if (response.status !== 200) throw Error("New game request failed")
+  }
+
   handleClick(i) {
+    // Do nothing if game already won
+    if (this.state.win) return
+
     const squares = this.state.squares.slice();
 
-    // Do nothing if square not empty or game already won
-    if (!G.isEmpty(i) || this.state.win) return
+    this.postMove(i)
+      .then(res => {
+        console.log(res)
+        // Check for invalid move
+        if (res.invalid) return
 
-    // Test express server
-    this.getResponse()
-      .then(res => { console.log(res) })
+        // Previous move
+        if (this.state.depth)
+          squares[this.state.prev] = <InterStone stoneColor={ (this.state.depth % 2 ? "black" : "white") } lastMoveMarker="0" />;
 
-    this.postMove('abc')
-      .then(res => { console.log(res) })
+        // Current move
+        squares[i] = <InterStone stoneColor={ (this.state.depth % 2 ? "white" : "black") } lastMoveMarker="1" />;
 
-    let cond = G.setMove(i)
-
-    // Previous move
-    if (this.state.depth)
-      squares[this.state.prev] = <InterStone stoneColor={ (this.state.depth % 2 ? "black" : "white") } lastMoveMarker="0" />;
-
-    // Current move
-    squares[i] = <InterStone stoneColor={ (this.state.depth % 2 ? "white" : "black") } lastMoveMarker="1" />;
-
-    this.setState({
-      squares: squares,
-      prev: i,
-      depth: this.state.depth + 1,
-      win: cond
+        this.setState({
+          squares: squares,
+          prev: i,
+          depth: this.state.depth + 1,
+          win: res.win
+        });
     });
   }
 
@@ -146,7 +155,6 @@ class BoardUI extends React.Component {
         onClick={() => {
           console.log("restarting..")
           this.reset()
-          G = new Logic();
         }}
       />
     );
