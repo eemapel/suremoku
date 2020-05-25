@@ -5,6 +5,7 @@ import './index.css';
 const initialState = {
   squares: Array(15 * 15).fill(<Inter vcfMarker="0" />),
   prev: null,
+  markers: [],
   depth: 0,
   win: false
 };
@@ -75,12 +76,16 @@ class BoardUI extends React.Component {
   }
 
   vcf() {
+    // Do nothing if game already won
+    if (this.state.win) return
+
     const squares = this.state.squares.slice();
 
     this.postVCF().then(res => {
       console.log(res)
 
       for(var i in res.positions) {
+        this.state.markers.push(res.positions[i])
         squares[res.positions[i]] = <Inter vcfMarker="1" />;
       }
 
@@ -151,6 +156,10 @@ class BoardUI extends React.Component {
         // Previous move
         if (this.state.depth)
           squares[this.state.prev] = <InterStone stoneColor={ (this.state.depth % 2 ? "black" : "white") } lastMoveMarker="0" />;
+
+        // Previous vcf markers
+        while (this.state.markers.length)
+          squares[this.state.markers.pop()] = <Inter vcfMarker="0" />;
 
         // Current move
         squares[i] = <InterStone stoneColor={ (this.state.depth % 2 ? "white" : "black") } lastMoveMarker="1" />;

@@ -36,8 +36,20 @@ app.post('/api/move', (req, res) => {
 app.post('/api/vcf', (req, res) => {
   console.log(req.originalUrl)
 
-  // TODO: get meaningful values here
-  res.send({ positions: [10, 12] });
+  let positions = [];
+
+  let evalboard = new logic();
+  evalboard.array = G.array
+  evalboard.history = G.history
+
+  for(i=0; i < evalboard.array.length; i++) {
+    if(evalboard.isEmpty(i)) {
+      if(evalboard.setMove(i))
+        positions.push(i)
+      evalboard.removeMove(i)
+    }
+  }
+  res.send({ positions: positions });
 });
 
 app.get('/api/hello', (req, res) => {

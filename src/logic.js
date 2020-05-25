@@ -8,6 +8,11 @@ class BoardLogic {
     return !this.array[idx]
   }
 
+  removeMove(idx) {
+    this.array[idx] = 0
+    this.history.pop()
+  }
+
   setMove(idx) {
     let color = 1 + (this.history.length % 2)
     this.array[idx] = color
