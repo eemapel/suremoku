@@ -1,3 +1,5 @@
+/* eslint-env es6 */
+
 const { Pool } = require('pg')
 
 const pool = new Pool()

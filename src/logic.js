@@ -1,3 +1,5 @@
+/* eslint-env es6 */
+
 class BoardLogic {
   constructor() {
     this.array = Array(15 * 15).fill(0);
