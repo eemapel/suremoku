@@ -24,6 +24,35 @@ class BoardLogic {
     return this.winCheck(idx)
   }
 
+  /*
+    Checks all position values for all 8 symmetries and returns the lowest
+  */
+  symmetryValue() {
+    let size = 15
+    let a = new Array(size*size)
+
+    // flips
+    for (s of [[0, 0], [0, 1], [1, 1], [1, 0]]) {
+      for (y = 0; y < size; y++) {
+        for (x = 0; x < size; x++) {
+          a[size*y + x%size] = arr[size*Math.abs(y - s[0]*(size - 1))  + Math.abs(x - s[1]*(size - 1))%size]
+        }
+      }
+
+      // rotations
+      for (r = 0; r < 2; r++) {
+        let tmp = [...a]
+        for (ry = 0; ry < size; ry++) {
+          for (rx = 0; rx < size; rx++) {
+            a[size*rx + ry%size] = tmp[size*ry + rx%size]
+          }
+        }
+        // a here is getting 8 different unique symmetries
+        // TODO: choose presentation and choose the lowest
+      }
+    }
+  }
+
   winCheck(idx) {
     // Get X [0..14]
     let x = idx % 15
